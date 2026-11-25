@@ -9,9 +9,10 @@
 
 \usepackage{xcolor}
 \usepackage{listings}
-\usepackage[hidelinks,pdftitle={Gramatica Formal del Lenguaje Go},pdfauthor={Flores Pereyra Jairo Jesus}]{hyperref}
+\usepackage[pdftitle={Gramatica Formal del Lenguaje Go},pdfauthor={Flores Pereyra Jairo Jesus}]{hyperref}
 
 \setlength{\emergencystretch}{2.5em}
+\def\UrlBreaks{\do\/\do\-\do\.\do\_}
 
 \definecolor{fondocodigo}{HTML}{F8FAFC}
 \definecolor{bordecodigo}{HTML}{C7D2FE}
@@ -22,6 +23,7 @@
 \definecolor{strcolor}{HTML}{059669}
 \definecolor{numcolor}{HTML}{D97706}
 \definecolor{puntcolor}{HTML}{475569}
+\hypersetup{colorlinks=true,urlcolor=kwcolor}
 
 \lstdefinestyle{gramatica}{
   basicstyle=\ttfamily\renewcommand{\baselinestretch}{1}\fontsize{9}{11.4}\selectfont,
@@ -88,6 +90,9 @@
     Universidad Técnica de Oruro \\[0.4em]
     24 de noviembre de 2026
 \end{center}
+
+\noindent\textbf{Enlace al repositorio:}\par
+\noindent\raggedright{\small\url{https://github.com/JfloresPereyra/Proyecto-Compilador-Golang-INF-3631A}}
 
 \section{Gramática formal}
 
