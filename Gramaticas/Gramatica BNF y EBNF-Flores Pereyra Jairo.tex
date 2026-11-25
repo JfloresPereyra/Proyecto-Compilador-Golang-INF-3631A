@@ -1,0 +1,378 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[a4paper, margin=2.54cm]{geometry}
+\usepackage{fontspec}
+\usepackage[spanish]{babel}
+\babelfont{rm}{Noto Sans}
+\setmonofont{Noto Sans Mono}
+\AtBeginDocument{\shorthandoff{"<>}}
+
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[hidelinks,pdftitle={Gramatica BNF y EBNF del Lenguaje Go},pdfauthor={Flores Pereyra Jairo Jesus}]{hyperref}
+
+\setlength{\emergencystretch}{2.5em}
+
+\definecolor{fondocodigo}{HTML}{F8FAFC}
+\definecolor{bordecodigo}{HTML}{C7D2FE}
+\definecolor{gris}{HTML}{64748B}
+\definecolor{kwcolor}{HTML}{2563EB}
+\definecolor{ntcolor}{HTML}{0E7490}
+\definecolor{opcolor}{HTML}{DB2777}
+\definecolor{strcolor}{HTML}{059669}
+\definecolor{numcolor}{HTML}{D97706}
+\definecolor{puntcolor}{HTML}{475569}
+
+\lstdefinestyle{gramatica}{
+  basicstyle=\ttfamily\renewcommand{\baselinestretch}{1}\fontsize{9}{11.4}\selectfont,
+  numbers=none,
+  backgroundcolor=\color{fondocodigo},
+  frame=leftline,
+  rulecolor=\color{bordecodigo},
+  framesep=6pt,
+  xleftmargin=12pt,
+  xrightmargin=6pt,
+  aboveskip=8pt,
+  belowskip=10pt,
+  breaklines=true,
+  breakatwhitespace=false,
+  breakindent=16pt,
+  postbreak=\mbox{\textcolor{gris}{\scriptsize$\hookrightarrow$}\space},
+  showstringspaces=false,
+  keepspaces=true,
+  columns=fullflexible,
+  upquote=true,
+  alsoletter={_},
+  keywordstyle=\color{kwcolor}\bfseries,
+  keywordstyle={[2]\color{ntcolor}},
+  keywords={package,main,import,type,struct,func,var,int,float64,string,bool,if,else,for,return,true,false},
+  morekeywords={[2]inicializacion_opcional,declaraciones_globales,resto_identificador,operador_relacional,declaracion_global,inicializacion_for,lista_expresiones,condicion_simple,lista_sentencias,operador_logico,mas_expresiones,llamada_funcion,declaracion_var,mas_condiciones,literal_struct,mas_parametros,acceso_struct,opcional_else,campos_struct,identificador,tipo_opcional,resto_decimal,parte_decimal,importaciones,actualizacion,resto_entero,resto_cadena,condicional,asignacion,parametros,par_cierra,estructura,expresion,condicion,impresion,sentencia,bucle_for,par_abre,programa,caracter,booleano,funcion,paquete,termino,retorno,simbolo,numero,factor,digito,cadena,bloque,valor,letra,tipo},
+  literate={::=}{{\textcolor{opcolor}{\bfseries ::=}}}3
+  {:=}{{\textcolor{opcolor}{\bfseries :=}}}2
+  {++}{{\textcolor{opcolor}{\bfseries ++}}}2
+  {==}{{\textcolor{opcolor}{\bfseries ==}}}2
+  {!=}{{\textcolor{opcolor}{\bfseries !=}}}2
+  {<=}{{\textcolor{opcolor}{\bfseries <=}}}2
+  {>=}{{\textcolor{opcolor}{\bfseries >=}}}2
+  {&&}{{\textcolor{opcolor}{\bfseries \&\&}}}2
+  {||}{{\textcolor{opcolor}{\bfseries ||}}}2
+  {|}{{\textcolor{opcolor}{|}}}1
+  {=}{{\textcolor{opcolor}{=}}}1
+  {+}{{\textcolor{opcolor}{+}}}1
+  {-}{{\textcolor{opcolor}{-}}}1
+  {*}{{\textcolor{opcolor}{*}}}1
+  {/}{{\textcolor{opcolor}{/}}}1
+  {<}{{\textcolor{opcolor}{$<$}}}1
+  {>}{{\textcolor{opcolor}{$>$}}}1
+  {!}{{\textcolor{opcolor}{!}}}1
+  {"}{{\textcolor{strcolor}{"}}}1
+  {'}{{\textcolor{strcolor}{'}}}1
+  {(}{{\textcolor{puntcolor}{(}}}1
+  {)}{{\textcolor{puntcolor}{)}}}1
+  {,}{{\textcolor{puntcolor}{,}}}1
+  {;}{{\textcolor{puntcolor}{;}}}1
+  {.}{{\textcolor{puntcolor}{.}}}1
+  {λ}{{\textcolor{numcolor}{λ}}}1
+  {->}{{\textcolor{opcolor}{\bfseries$\rightarrow$}}}2
+}
+
+\linespread{1.2}
+\pagestyle{plain}
+
+\begin{document}
+
+\begin{center}
+    {\Large\bfseries Gramática BNF y EBNF del Lenguaje Go (Golang)}\\[0.6em]
+    Univ. Flores Pereyra Jairo Jesus \\
+    INF 3631-A: Diseño de Compiladores \\
+    Universidad Técnica de Oruro \\[0.4em]
+    24 de noviembre de 2026
+\end{center}
+
+\section{Gramática BNF}
+
+\begin{lstlisting}[style=gramatica]
+<programa> ::= <paquete> <importaciones> <declaraciones_globales>
+
+<paquete> ::= "package" "main"
+
+<importaciones> ::= "import" '"fmt"'
+    | λ
+
+<declaraciones_globales> ::= <declaracion_global> <declaraciones_globales>
+    | λ
+
+<declaracion_global> ::= <estructura>
+    | <funcion>
+
+<estructura> ::= "type" <identificador> "struct" "{" <campos_struct> "}"
+
+<campos_struct> ::= <identificador> <tipo> <campos_struct>
+    | λ
+
+<funcion> ::= "func" <identificador> <par_abre> <parametros>
+    <par_cierra> <tipo_opcional> <bloque>
+
+<parametros> ::= <identificador> <tipo> <mas_parametros>
+    | λ
+
+<mas_parametros> ::= "," <identificador> <tipo> <mas_parametros>
+    | λ
+
+<tipo_opcional> ::= <tipo>
+    | λ
+
+<tipo> ::= "int"
+    | "float64"
+    | "string"
+    | "bool"
+    | <identificador>
+
+<bloque> ::= "{" <lista_sentencias> "}"
+
+<lista_sentencias> ::= <sentencia> <lista_sentencias>
+    | λ
+
+<sentencia> ::= <declaracion_var>
+    | <asignacion>
+    | <condicional>
+    | <bucle_for>
+    | <impresion>
+    | <retorno>
+    | <llamada_funcion>
+
+<declaracion_var> ::= "var" <identificador> <tipo> <inicializacion_opcional>
+
+<inicializacion_opcional> ::= "=" <expresion>
+    | λ
+
+<asignacion> ::= <identificador> "=" <expresion>
+    | <identificador> ":=" <expresion>
+    | <acceso_struct> "=" <expresion>
+
+<condicional> ::= "if" <condicion> <bloque> <opcional_else>
+
+<opcional_else> ::= "else" <bloque>
+    | "else" <condicional>
+    | λ
+
+<bucle_for> ::= "for" <inicializacion_for> ";" <condicion> ";"
+    <actualizacion> <bloque>
+
+<inicializacion_for> ::= <asignacion>
+
+<actualizacion> ::= <asignacion>
+    | <identificador> "++"
+
+<impresion> ::= "fmt.Println" <par_abre> <lista_expresiones> <par_cierra>
+    | "fmt.Printf" <par_abre> <lista_expresiones> <par_cierra>
+
+<lista_expresiones> ::= <expresion> <mas_expresiones>
+    | λ
+
+<mas_expresiones> ::= "," <expresion> <mas_expresiones>
+    | λ
+
+<retorno> ::= "return" <expresion>
+    | "return"
+
+<condicion> ::= <condicion_simple> <mas_condiciones>
+
+<mas_condiciones> ::= <operador_logico> <condicion_simple> <mas_condiciones>
+    | λ
+
+<condicion_simple> ::= <expresion> <operador_relacional> <expresion>
+    | "!" <condicion_simple>
+    | <par_abre> <condicion> <par_cierra>
+    | <booleano>
+    | <identificador>
+
+<operador_logico> ::= "&&"
+    | "||"
+
+<operador_relacional> ::= "=="
+    | "!="
+    | "<"
+    | "<="
+    | ">"
+    | ">="
+
+<expresion> ::= <termino>
+    | <expresion> "+" <termino>
+    | <expresion> "-" <termino>
+
+<termino> ::= <factor>
+    | <termino> "*" <factor>
+    | <termino> "/" <factor>
+    | <termino> "%" <factor>
+
+<factor> ::= <valor>
+    | <acceso_struct>
+    | <llamada_funcion>
+    | <literal_struct>
+    | <par_abre> <expresion> <par_cierra>
+    | "-" <factor>
+
+<valor> ::= <identificador>
+    | <numero>
+    | <cadena>
+    | <booleano>
+
+<acceso_struct> ::= <identificador> "." <identificador>
+
+<llamada_funcion> ::= <identificador>
+    <par_abre> <lista_expresiones> <par_cierra>
+
+<literal_struct> ::= <identificador> "{" <lista_expresiones> "}"
+
+<par_abre> ::= "("
+
+<par_cierra> ::= ")"
+
+<booleano> ::= "true"
+    | "false"
+
+<cadena> ::= '"' <resto_cadena> '"'
+
+<resto_cadena> ::= <caracter> <resto_cadena>
+    | λ
+
+<caracter> ::= <letra>
+    | <digito>
+    | <simbolo>
+
+<simbolo> ::= " " | "%" | "\" | ":" | ";" | "," | "." | "!"
+    | "(" | ")" | "+" | "-" | "*" | "/" | "=" | "<" | ">" | "_"
+
+<identificador> ::= <letra> <resto_identificador>
+
+<resto_identificador> ::= <letra> <resto_identificador>
+    | <digito> <resto_identificador>
+    | "_" <resto_identificador>
+    | λ
+
+<numero> ::= <digito> <resto_entero> <parte_decimal>
+
+<resto_entero> ::= <digito> <resto_entero>
+    | λ
+
+<parte_decimal> ::= "." <digito> <resto_decimal>
+    | λ
+
+<resto_decimal> ::= <digito> <resto_decimal>
+    | λ
+
+<letra> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
+    | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t"
+    | "u" | "v" | "w" | "x" | "y" | "z"
+    | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
+    | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
+    | "U" | "V" | "W" | "X" | "Y" | "Z"
+
+<digito> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+\end{lstlisting}
+
+\section{Gramática EBNF}
+
+\begin{lstlisting}[style=gramatica]
+<programa> ::= <paquete> [ <importaciones> ] { <declaracion_global> }
+
+<paquete> ::= "package" "main"
+
+<importaciones> ::= "import" '"fmt"'
+
+<declaracion_global> ::= <estructura>
+    | <funcion>
+
+<estructura> ::= "type" <identificador> "struct" "{"
+    { <identificador> <tipo> } "}"
+
+<funcion> ::= "func" <identificador> "(" <parametros> ")"
+    [ <tipo> ] <bloque>
+
+<parametros> ::= [ <identificador> <tipo>
+    { "," <identificador> <tipo> } ]
+
+<tipo> ::= "int" | "float64" | "string" | "bool" | <identificador>
+
+<bloque> ::= "{" { <sentencia> } "}"
+
+<sentencia> ::= <declaracion_var>
+    | <asignacion>
+    | <condicional>
+    | <bucle_for>
+    | <impresion>
+    | <retorno>
+    | <llamada_funcion>
+
+<declaracion_var> ::= "var" <identificador> <tipo> [ "=" <expresion> ]
+
+<asignacion> ::= <identificador> ( "=" | ":=" ) <expresion>
+    | <acceso_struct> "=" <expresion>
+
+<condicional> ::= "if" <condicion> <bloque>
+    [ "else" ( <bloque> | <condicional> ) ]
+
+<bucle_for> ::= "for" <asignacion> ";" <condicion> ";"
+    ( <asignacion> | <identificador> "++" ) <bloque>
+
+<impresion> ::= ( "fmt.Println" | "fmt.Printf" )
+    "(" [ <expresion> { "," <expresion> } ] ")"
+
+<retorno> ::= "return" [ <expresion> ]
+
+<condicion> ::= <condicion_simple> { <operador_logico> <condicion_simple> }
+
+<condicion_simple> ::= <expresion> <operador_relacional> <expresion>
+    | "!" <condicion_simple>
+    | "(" <condicion> ")"
+    | <booleano>
+    | <identificador>
+
+<operador_logico> ::= "&&" | "||"
+
+<operador_relacional> ::= "==" | "!=" | "<" | "<=" | ">" | ">="
+
+<expresion> ::= <termino> { ( "+" | "-" ) <termino> }
+
+<termino> ::= <factor> { ( "*" | "/" | "%" ) <factor> }
+
+<factor> ::= <valor>
+    | <acceso_struct>
+    | <llamada_funcion>
+    | <literal_struct>
+    | "(" <expresion> ")"
+    | "-" <factor>
+
+<valor> ::= <identificador> | <numero> | <cadena> | <booleano>
+
+<acceso_struct> ::= <identificador> "." <identificador>
+
+<llamada_funcion> ::= <identificador>
+    "(" [ <expresion> { "," <expresion> } ] ")"
+
+<literal_struct> ::= <identificador>
+    "{" [ <expresion> { "," <expresion> } ] "}"
+
+<booleano> ::= "true" | "false"
+
+<cadena> ::= '"' { <letra> | <digito> | <simbolo> } '"'
+
+<simbolo> ::= " " | "%" | "\" | ":" | ";" | "," | "." | "!"
+    | "(" | ")" | "+" | "-" | "*" | "/" | "=" | "<" | ">" | "_"
+
+<identificador> ::= <letra> { <letra> | <digito> | "_" }
+
+<numero> ::= <digito> { <digito> } [ "." <digito> { <digito> } ]
+
+<letra> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
+    | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t"
+    | "u" | "v" | "w" | "x" | "y" | "z"
+    | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
+    | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
+    | "U" | "V" | "W" | "X" | "Y" | "Z"
+
+<digito> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+\end{lstlisting}
+
+\end{document}
